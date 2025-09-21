@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streaming de Vídeo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+    <style>
+        .video-container {
+            max-height: 75vh;
+            background-color: #000;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body class="d-flex flex-column min-vh-100 bg-light">
+
+    <nav class="navbar bg-primary" data-bs-theme="dark">
+        <div class="container">
+            <a href="#" class="navbar-brand">
+                <strong>Streaming de Video com HLS</strong>
+            </a>
+        </div>
+    </nav>
+
+    <main class="flex-grow-1">
+        <div class="container py-4">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="video-container shadow rounded overflow-hidden">
+                        <video id="videoPlayer" controls></video>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <h2 class="h4 mb-3">Selecione um vídeo para assistir</h2>
+                <div class="btn-group" role="group" aria-label="Seleção de Vídeos">
+                    <a href="?video=video1" id="btnVideo1" class="btn btn-primary btn-lg">Video 1</a>
+                    <a href="?video=video2" id="btnVideo2" class="btn btn-secondary btn-lg">Video 2</a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="footer mt-auto py-3 bg-white border-top">
+        <div class="container text-center">
+            <span class="text-muted">Trabalho Final de Redes de Computadores 2 - Marco Jobim & Luiz Gabriel</span>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const videoElement = document.getElementById('videoPlayer');
+            const params = new URLSearchParams(window.location.search);
+
+            const videoId = params.get('video') || 'video1';
+
+            const videoSrc = `/hls/${videoId}/playlist.m3u8`;
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                console.log(`Carregando vídeo de: ${videoSrc}`);
+                hls.loadSource(videoSrc);
+                hls.attachMedia(videoElement);
+            } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+                videoElement.src = videoSrc;
+            }
+
+            const btnVideo1 = document.getElementById('btnVideo1');
+            const btnVideo2 = document.getElementById('btnVideo2');
+
+            if (videoId == 'video2') {
+                btnVideo2.classList.add('btn-primary');
+                btnVideo2.classList.remove('btn-secondary');
+
+                btnVideo1.classList.add('btn-secondary');
+                btnVideo1.classList.remove('btn-primary');
+            }
+            else {
+                btnVideo1.classList.add('btn-primary');
+                btnVideo1.classList.remove('btn-secondary');
+
+                btnVideo2.classList.add('btn-secondary');
+                btnVideo2.classList.remove('btn-primary');
+            }
+        });
+
+
+    </script>
+</body>
+
+</html>
